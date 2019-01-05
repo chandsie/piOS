@@ -1,0 +1,4 @@
+not_main() {
+
+    return;
+}
