@@ -1,6 +1,0 @@
-def add(int a, int b) : int
-   int c = a + b
-   return c
-end
-
-print(add(1,2))

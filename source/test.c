@@ -1,4 +1,3 @@
 not_main() {
-
     return;
 }

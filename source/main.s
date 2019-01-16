@@ -5,29 +5,35 @@ _start:
 
 .section .text
 main:
+    ldr r0,=0x20200000
+    # Enable 16th GPIO pin
+    mov r1,#1
+    lsl r1,#18
+    str r1,[r0,#4]
 
-    # set up the stack
-    mov sp,#0x8000
+    mov r1,#1
+    lsl r1,#16
 
-    mov r0,#16
-    mov r1,#0
-    bl SetGpioFunction
+    loop$:
+    # Turn off pin 16
+    str r1,[r0,#40]
 
-    loop$: 
-    mov r0,#16
-    mov r1,#0
-    bl SetGpio
+    # Wait a little
+    mov r2,#0x3F0000
+    wait1$:
+    sub r2,#1
+    cmp r2,#0
+    bne wait1$
 
-//    ldr r0,=100000
-//    bl Wait
-//
-//    // Turn on GPIO Pin 16
-//    mov r0,#16
-//    mov r1,#1
-//    bl SetGpio
-//
-//    ldr r0,=100000
-//    bl Wait
+    # Turn on pin 16
+    str r1,[r0,#28]
+
+    # Wait a little
+    mov r2,#0x3F0000
+    wait2$:
+    sub r2,#1
+    cmp r2,#0
+    bne wait2$
 
     b loop$
-    
+
