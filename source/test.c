@@ -1,3 +1,3 @@
-not_main() {
+void not_main() {
     return;
 }
