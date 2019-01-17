@@ -39,13 +39,13 @@ $(TARGET): $(ELF)
 $(LIST): $(ELF) $(DBG_DIR)
 	$(ARCH)-objdump -d $< > $@
 
-$(ELF): $(OBJECTS) $(HEADERS) $(DBG_DIR)
-	$(LD) $(LFLAGS) -T $(LINK) -Map $(MAP) -o $@ $<
+$(ELF): $(OBJECTS) $(HEADERS) | $(DBG_DIR)
+	$(LD) $(LFLAGS) -T $(LINK) -Map $(MAP) -o $@ $(OBJECTS)
 
-$(OBJ_DIR)/%.o: $(KER_SRC_DIR)/%.s $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(KER_SRC_DIR)/%.s | $(OBJ_DIR)
 	$(AS) $(AFLAGS) -I $(KER_SRC_DIR) -c $< -o $@
 
-$(OBJ_DIR)/%.o: $(KER_SRC_DIR)/%.c $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(KER_SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -I $(KER_SRC_DIR) -I $(KER_HDR_DIR) -c $< -o $@
 
 $(OBJ_DIR):
