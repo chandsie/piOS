@@ -31,6 +31,8 @@ ELF = $(DBG_DIR)/kernel.elf
 LIST = $(DBG_DIR)/kernel.list
 MAP = $(DBG_DIR)/kernel.map
 
+SD_CARD = /Volumes/boot
+
 build: $(TARGET) $(LIST)
 
 $(TARGET): $(ELF)
@@ -39,7 +41,7 @@ $(TARGET): $(ELF)
 $(LIST): $(ELF) $(DBG_DIR)
 	$(ARCH)-objdump -d $< > $@
 
-$(ELF): $(OBJECTS) $(HEADERS) | $(DBG_DIR)
+$(ELF): $(OBJECTS) $(HEADERS) $(LINK) | $(DBG_DIR)
 	$(LD) $(LFLAGS) -T $(LINK) -Map $(MAP) -o $@ $(OBJECTS)
 
 $(OBJ_DIR)/%.o: $(KER_SRC_DIR)/%.s | $(OBJ_DIR)
@@ -54,7 +56,10 @@ $(OBJ_DIR):
 $(DBG_DIR):
 	mkdir $@
 
-.PHONY: clean
+.PHONY: clean install
+install: $(TARGET)
+	cp $< $(SD_CARD)
+
 clean: 
 	-rm -rf $(OBJ_DIR)
 	-rm -rf $(DBG_DIR)
