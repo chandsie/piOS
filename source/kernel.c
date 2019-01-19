@@ -1,5 +1,6 @@
 #include <stdint.h>
-#include "kernel.h"
+#include <kernel.h>
+#include <gpio.h>
 
 /* "New" way of doing things that isn't deprecated - but maybe only valid on newer hardware
 typedef enum {
@@ -37,9 +38,9 @@ typedef struct {
 static fb_init_t fb_init __attribute__((aligned(16)));
 
 void mailbox0_send(uint32_t data) {
-    while((*(mail_status_t*)((MAIL_BASE + 0x18))).full);
+    while((*(volatile mail_status_t*)((MAIL_BASE + 0x18))).full);
 
-    *((uint32_t*)MAIL_BASE) = data;
+    *((volatile uint32_t*)MAIL_BASE) = data;
 }
 
 void framebufferInit() {
@@ -55,17 +56,6 @@ void framebufferInit() {
     mailbox0_send(requestData);
 }
 
-inline void GPIO16Init() {
-    // Set GPIO Ping 16 to output mode
-    volatile uint32_t* fsel = (volatile uint32_t*)(GPIO_BASE + 0x4);
-    *fsel = (1 << 18);
-}
-
-inline void GPIO16High() {
-    volatile uint32_t* gpio_out_clear = (volatile uint32_t*)(GPIO_BASE + 0x28);
-    *gpio_out_clear = (1 << 16);
-}
-
 void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags) {
     // Unused for now
     (void) r0;
@@ -73,7 +63,7 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags) {
     (void) atags;
 
     GPIO16Init();
-    GPIO16High();
+    GPIO16On();
     framebufferInit();
 
     return;

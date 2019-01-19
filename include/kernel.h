@@ -1,3 +1,6 @@
+#ifndef KERNEL_H
+#define KERNEL_H
+
 enum {
     IO_BASE       = 0x20000000,
     GPIO_BASE     = (IO_BASE + 0x00200000),
@@ -5,3 +8,5 @@ enum {
 
     BUS_ADDR_BASE = 0x4000000,
 };
+
+#endif // KERNEL_H
