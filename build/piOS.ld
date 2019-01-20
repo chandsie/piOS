@@ -24,7 +24,8 @@ SECTIONS {
     . = ALIGN(4096);
     __bss_end = .;
 
-    /DISCARD/ : {
-        *(.*)
-    }
+/*    /DISCARD/ : {
+//        *(.*)
+//    }
+*/
 }

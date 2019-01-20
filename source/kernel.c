@@ -35,12 +35,24 @@ typedef struct {
 } mail_status_t;
 
 
-static fb_init_t fb_init __attribute__((aligned(16)));
+fb_init_t fb_init __attribute__((aligned(16)));
 
 void mailbox0_send(uint32_t data) {
+    // Wait for mailbox to be not full
     while((*(volatile mail_status_t*)((MAIL_BASE + 0x18))).full);
 
-    *((volatile uint32_t*)MAIL_BASE) = data;
+    *((volatile uint32_t*)(MAIL_BASE + 0x20)) = data;
+    GPIO16On();
+}
+
+uint32_t mailbox0_receive() {
+    // Wait for mailbox to be not empty
+    while((*(volatile mail_status_t*)((MAIL_BASE + 0x18))).empty);
+
+    uint32_t ret = *((volatile uint32_t*)MAIL_BASE);
+    GPIO16Off();
+
+    return ret;
 }
 
 void framebufferInit() {
@@ -52,8 +64,17 @@ void framebufferInit() {
     fb_init.depth = 24;
 
     // Send 28 MSBs of message addr and channel selection (1 on MB 0) as data
-    uint32_t requestData = BUS_ADDR_BASE | (uint32_t)&fb_init | 0x1;
-    mailbox0_send(requestData);
+    uint32_t request = BUS_ADDR_BASE | (uint32_t)&fb_init | 0x1;
+    uint32_t response;
+    do {
+        mailbox0_send(request);
+        response = mailbox0_receive();
+    } while (!(response >> 4) && (response & 0x1));
+    GPIO16On();
+
+    for (uint32_t i = 0; i < fb_init.buff_size ; i++) {
+        *((uint8_t *)(fb_init.buff_addr + i)) = 0x00;
+    }
 }
 
 void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags) {
@@ -63,7 +84,7 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags) {
     (void) atags;
 
     GPIO16Init();
-    GPIO16On();
+    GPIO16Off();
     framebufferInit();
 
     return;
