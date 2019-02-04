@@ -37,20 +37,36 @@ typedef struct {
 
 fb_init_t fb_init __attribute__((aligned(16)));
 
+#define MAIL_STATUS (volatile mail_status_t *)(MAIL_BASE + 0x38)
+// ^ The constant *should* be 0x38 for the send but the working kernel uses 0x18.. idk wtf
+#define MAIL_READ_STATUS (volatile mail_status_t *)(MAIL_BASE + 0x18)
+#define MAIL_WRITE  (volatile uint32_t *)(MAIL_BASE + 0x20)
+#define MAIL_READ   (volatile uint32_t *)(MAIL_BASE + 0x00)
+
 void mailbox0_send(uint32_t data) {
     // Wait for mailbox to be not full
-    while((*(volatile mail_status_t*)((MAIL_BASE + 0x18))).full);
+    mail_status_t status;
+    do {
+        status = *MAIL_STATUS; 
+    } while (status.full);
 
-    *((volatile uint32_t*)(MAIL_BASE + 0x20)) = data;
-    GPIO16On();
+    *MAIL_WRITE = data;
 }
 
-uint32_t mailbox0_receive() {
-    // Wait for mailbox to be not empty
-    while((*(volatile mail_status_t*)((MAIL_BASE + 0x18))).empty);
+uint32_t mailbox0_receive(int channel) {
+    uint32_t ret;
+    int msg_channel;
+    mail_status_t status;
+    // Wait for mailbox to contain a message for the specified channel
+    do {
+        // Wait for mailbox to be not empty
+        do {
+            status = *MAIL_READ_STATUS;
+        } while (status.empty);
 
-    uint32_t ret = *((volatile uint32_t*)MAIL_BASE);
-    GPIO16Off();
+        ret = *MAIL_READ;
+        msg_channel = ret & 0xF;
+    } while(msg_channel != channel);
 
     return ret;
 }
@@ -64,16 +80,19 @@ void framebufferInit() {
     fb_init.depth = 24;
 
     // Send 28 MSBs of message addr and channel selection (1 on MB 0) as data
-    uint32_t request = BUS_ADDR_BASE | (uint32_t)&fb_init | 0x1;
+    uint32_t request = BUS_ADDR_BASE | ((uint32_t)(&fb_init)) | 0x1;
     uint32_t response;
+
     do {
         mailbox0_send(request);
-        response = mailbox0_receive();
-    } while (!(response >> 4) && (response & 0x1));
-    GPIO16On();
+        response = mailbox0_receive(1);
+    } while (!response);
+    if (fb_init.buff_addr) {
+        GPIO16On();
+    }
 
     for (uint32_t i = 0; i < fb_init.buff_size ; i++) {
-        *((uint8_t *)(fb_init.buff_addr + i)) = 0x00;
+        *((uint8_t *)(fb_init.buff_addr + i)) = 0xFF;
     }
 }
 
