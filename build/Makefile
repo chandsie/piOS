@@ -5,7 +5,7 @@ CC = $(ARCH)-gcc
 AS = $(ARCH)-as
 LD = $(ARCH)-ld
 
-CFLAGS = -mcpu=$(CPU) -fpic -ffreestanding -Wall -Wextra
+CFLAGS = -mcpu=$(CPU) -fpic -ffreestanding -O2 -Wall -Wextra
 AFLAGS = -mcpu=$(CPU) 
 LFLAGS = --no-undefined
 
