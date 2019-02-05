@@ -1,9 +1,12 @@
+TOOLCHAIN_BIN = /Users/chandsie/opt/cross/bin/
 ARCH = arm-none-eabi
 CPU = arm1176jzf-s
 
-CC = $(ARCH)-gcc
-AS = $(ARCH)-as
-LD = $(ARCH)-ld
+CC = $(TOOLCHAIN_BIN)$(ARCH)-gcc
+AS = $(TOOLCHAIN_BIN)$(ARCH)-as
+LD = $(TOOLCHAIN_BIN)$(ARCH)-ld
+OC = $(TOOLCHAIN_BIN)$(ARCH)-objcopy
+OD = $(TOOLCHAIN_BIN)$(ARCH)-objdump
 
 CFLAGS = -mcpu=$(CPU) -fpic -ffreestanding -O2 -Wall -Wextra
 AFLAGS = -mcpu=$(CPU)
@@ -31,15 +34,16 @@ ELF = $(DBG_DIR)/kernel.elf
 LIST = $(DBG_DIR)/kernel.list
 MAP = $(DBG_DIR)/kernel.map
 
-SD_CARD = /Volumes/boot
+SD_CARD_DIR = /Volumes/boot
+SD_CARD_DEV = /dev/disk2
 
 build: $(TARGET) $(LIST)
 
 $(TARGET): $(ELF)
-	$(ARCH)-objcopy $< -O binary $@
+	$(OC) $< -O binary $@
 
 $(LIST): $(ELF) $(DBG_DIR)
-	$(ARCH)-objdump -d $< > $@
+	$(OD) -d $< > $@
 
 $(ELF): $(OBJECTS) $(HEADERS) $(LINK) | $(DBG_DIR)
 	$(LD) $(LFLAGS) -T $(LINK) -Map $(MAP) -o $@ $(OBJECTS)
@@ -57,8 +61,9 @@ $(DBG_DIR):
 	mkdir $@
 
 .PHONY: clean install
-install: $(TARGET)
-	cp $< $(SD_CARD)
+install: $(TARGET) $(LIST)
+	cp $< $(SD_CARD_DIR)
+	diskutil eject $(SD_CARD_DEV)
 
 clean:
 	-rm -rf $(OBJ_DIR)
