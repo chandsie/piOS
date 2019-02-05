@@ -6,7 +6,7 @@ AS = $(ARCH)-as
 LD = $(ARCH)-ld
 
 CFLAGS = -mcpu=$(CPU) -fpic -ffreestanding -O2 -Wall -Wextra
-AFLAGS = -mcpu=$(CPU) 
+AFLAGS = -mcpu=$(CPU)
 LFLAGS = --no-undefined
 
 DBG_DIR = debug
@@ -60,7 +60,7 @@ $(DBG_DIR):
 install: $(TARGET)
 	cp $< $(SD_CARD)
 
-clean: 
+clean:
 	-rm -rf $(OBJ_DIR)
 	-rm -rf $(DBG_DIR)
 	-rm -f $(TARGET)
