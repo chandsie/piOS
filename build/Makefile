@@ -8,7 +8,7 @@ LD = $(TOOLCHAIN_BIN)$(ARCH)-ld
 OC = $(TOOLCHAIN_BIN)$(ARCH)-objcopy
 OD = $(TOOLCHAIN_BIN)$(ARCH)-objdump
 
-CFLAGS = -mcpu=$(CPU) -fpic -ffreestanding -O2 -Wall -Wextra
+CFLAGS = -mcpu=$(CPU) -std=c11 -fpic -ffreestanding -O2 -Wall -Wextra -pedantic
 AFLAGS = -mcpu=$(CPU)
 LFLAGS = --no-undefined
 
