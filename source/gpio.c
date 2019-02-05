@@ -1,6 +1,6 @@
 #include <gpio.h>
-#include <stdint.h>
-#include <kernel.h>
+
+// TODO(2/2/2019): Create constants for mem offsets
 
 void GPIO16Init() {
     // Set GPIO Ping 16 to output mode
