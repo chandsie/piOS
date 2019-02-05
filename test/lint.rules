@@ -4,4 +4,4 @@ Only one associated header per source file
 Sort includes alphabetically
 4 space tabs
 functions names in camelCase with lowerCase firstLetter
-
+90 character max line length

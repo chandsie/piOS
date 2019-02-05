@@ -5,6 +5,9 @@
 #include <kernel.h>
 #include <mailbox.h>
 
+#define COLORDEPTH 24
+#define PIXEL_BYTES (COLORDEPTH / 8)
+
 typedef struct {
     uint32_t width;
     uint32_t height;
@@ -14,12 +17,18 @@ typedef struct {
     uint32_t depth;
     uint32_t virtual_offset_x;
     uint32_t virtual_offset_y;
-    void * buff_addr;
+    uint8_t * buff_addr;
     uint32_t buff_size;
-} fb_init_t;
+} fb_info_t;
+
+typedef struct {
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+} pixel_t;
 
 void framebufferInit();
-
-fb_init_t fb_init __attribute__((aligned(16)));
+void clearFrame();
+void drawPixel(uint32_t x, uint32_t y, const pixel_t * pixel);
 
 #endif // GRAPHICS_H
