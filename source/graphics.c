@@ -1,7 +1,7 @@
 #include <graphics.h>
 
-static const pixel_t white = {.red = 0xFF, .green = 0xFF, .blue = 0xFF};
-static const pixel_t black;
+static const color_t white = {.red = 0xFF, .green = 0xFF, .blue = 0xFF};
+static const color_t black;
 
 static fb_info_t fb_info  __attribute__((aligned(16)));
 static graphics_info_t g_info = {.background=&black, .foreground=&white};
@@ -25,14 +25,6 @@ void framebufferInit() {
 
     // Ensure we initialize to a known clean state
     clearFrame();
-
-    puts("THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG");
-}
-
-void puts(const char* str) {
-    while(*str) {
-        putc(*str++);
-    }
 }
 
 void clearFrame() {
@@ -41,7 +33,7 @@ void clearFrame() {
     }
 }
 
-void drawPixel(int x, int y, const pixel_t * pixel) {
+void drawPixel(int x, int y, const color_t * pixel) {
     uint8_t * target = fb_info.buff_addr + (y * fb_info.pitch) + (x * PIXEL_BYTES);
 
     *(target) = pixel->blue;
@@ -49,7 +41,7 @@ void drawPixel(int x, int y, const pixel_t * pixel) {
     *(target + 2) = pixel->red;
 }
 
-void putc(char c) {
+void drawChar(char c) {
     const uint8_t * bitmap = getCharBitmap(c);
     int x_offset = g_info.column_index * CHAR_WIDTH;
     int y_offset = g_info.row_index * CHAR_HEIGHT;

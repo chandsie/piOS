@@ -13,7 +13,7 @@ typedef struct {
     uint8_t red;
     uint8_t green;
     uint8_t blue;
-} pixel_t;
+} color_t;
 
 
 typedef struct {
@@ -32,14 +32,13 @@ typedef struct {
 typedef struct {
     uint32_t row_index;
     uint32_t column_index;
-    const pixel_t * background;
-    const pixel_t * foreground;
+    const color_t * background;
+    const color_t * foreground;
 } graphics_info_t;
 
 void framebufferInit();
 void clearFrame();
-void drawPixel(int x, int y, const pixel_t * pixel);
-void puts(const char * str);
-void putc(char c);
+void drawPixel(int x, int y, const color_t * pixel);
+void drawChar(char c);
 
 #endif // GRAPHICS_H
