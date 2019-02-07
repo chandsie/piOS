@@ -52,7 +52,7 @@ void drawPixel(int x, int y, const pixel_t * pixel) {
 void putc(char c) {
     const uint8_t * bitmap = getCharBitmap(c);
     int x_offset = g_info.column_index * CHAR_WIDTH;
-    int y_offset = g_info.row_index * LINE_HEIGHT;
+    int y_offset = g_info.row_index * CHAR_HEIGHT;
 
     for (int y = 0; y < 16; y++) {
         for (int x = 0; x < 8; x++) {
