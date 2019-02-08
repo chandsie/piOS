@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <font.h>
-#include <kernel.h>
 #include <mailbox.h>
 
 #define COLORDEPTH 24

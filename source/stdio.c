@@ -14,6 +14,7 @@ void puts(const char* str) {
 void putc(char c) {
     int x_offset = c_info.column_index * CHAR_WIDTH;
     int y_offset = c_info.row_index * CHAR_HEIGHT;
+
     drawChar(x_offset, y_offset, c_info.foreground, c_info.background, c);
 
     c_info.column_index++;

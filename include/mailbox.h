@@ -2,7 +2,7 @@
 #define MAILBOX_H
 
 #include <stdint.h>
-#include <kernel.h>
+#include <peripherals.h>
 
 // Mailbox 0 is only used for VC -> ARM communication
 #define MAIL_0_STATUS ((volatile mail_status_t *)(MAIL_BASE + 0x18))

@@ -46,8 +46,8 @@ void drawChar(
     const uint8_t * bitmap = getCharBitmap(c);
 
     for (int col_index = 0; col_index < 16; col_index++) {
-        for (int row_index = 0; row_index < 8; x++) {
-            if (bitmap[col_index] & (1 << x)) {
+        for (int row_index = 0; row_index < 8; row_index++) {
+            if (bitmap[col_index] & (1 << row_index)) {
                 drawPixel(8 - row_index - 1 + x, col_index + y, foreground);
             } else {
                 drawPixel(8 - row_index - 1 + x, col_index + y, background);

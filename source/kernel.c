@@ -9,6 +9,7 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags) {
     GPIO16Init();
     GPIO16On();
     framebufferInit();
+    puts("Welcome to piOS!");
 
     return;
 }
