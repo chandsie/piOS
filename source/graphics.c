@@ -1,10 +1,6 @@
 #include <graphics.h>
 
-static const color_t white = {.red = 0xFF, .green = 0xFF, .blue = 0xFF};
-static const color_t black;
-
 static fb_info_t fb_info  __attribute__((aligned(16)));
-static graphics_info_t g_info = {.background=&black, .foreground=&white};
 
 void framebufferInit() {
     // Fill out non-zero properties of fb init message
@@ -33,32 +29,29 @@ void clearFrame() {
     }
 }
 
-void drawPixel(int x, int y, const color_t * pixel) {
+void drawPixel(int x, int y, const color_t * color) {
     uint8_t * target = fb_info.buff_addr + (y * fb_info.pitch) + (x * PIXEL_BYTES);
 
-    *(target) = pixel->blue;
-    *(target + 1) = pixel->green;
-    *(target + 2) = pixel->red;
+    *(target) = color->blue;
+    *(target + 1) = color->green;
+    *(target + 2) = color->red;
 }
 
-void drawChar(char c) {
+void drawChar(
+        uint32_t x,
+        uint32_t y,
+        const color_t * foreground,
+        const color_t * background,
+        char c) {
     const uint8_t * bitmap = getCharBitmap(c);
-    int x_offset = g_info.column_index * CHAR_WIDTH;
-    int y_offset = g_info.row_index * CHAR_HEIGHT;
 
-    for (int y = 0; y < 16; y++) {
-        for (int x = 0; x < 8; x++) {
-            if (bitmap[y] & (1 << x)) {
-                drawPixel(8 - x - 1 + x_offset , y + y_offset, g_info.foreground);
+    for (int col_index = 0; col_index < 16; col_index++) {
+        for (int row_index = 0; row_index < 8; x++) {
+            if (bitmap[col_index] & (1 << x)) {
+                drawPixel(8 - row_index - 1 + x, col_index + y, foreground);
             } else {
-                drawPixel(8 - x - 1 + x_offset , y + y_offset, g_info.background);
+                drawPixel(8 - row_index - 1 + x, col_index + y, background);
             }
         }
-    }
-
-    g_info.column_index++;
-    if (g_info.column_index == 10) {
-        g_info.column_index = 0;
-        g_info.row_index++;
     }
 }

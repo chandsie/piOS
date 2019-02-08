@@ -29,16 +29,9 @@ typedef struct {
     uint32_t buff_size;
 } fb_info_t;
 
-typedef struct {
-    uint32_t row_index;
-    uint32_t column_index;
-    const color_t * background;
-    const color_t * foreground;
-} graphics_info_t;
-
 void framebufferInit();
 void clearFrame();
-void drawPixel(int x, int y, const color_t * pixel);
-void drawChar(char c);
+void drawPixel(int x, int y, const color_t * color);
+void drawChar(uint32_t x, uint32_t y, const color_t * foreground, const color_t * background, char c);
 
 #endif // GRAPHICS_H
