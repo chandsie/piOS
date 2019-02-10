@@ -4,8 +4,8 @@
 #include <graphics.h>
 
 typedef struct {
-    uint32_t row_index;
-    uint32_t column_index;
+    uint32_t x_offset;
+    uint32_t y_offset;
     const color_t * background;
     const color_t * foreground;
 } console_info_t;

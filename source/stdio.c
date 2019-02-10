@@ -5,21 +5,36 @@ static const color_t black;
 
 static console_info_t c_info = {.background=&black, .foreground=&white};
 
+void putNewline() {
+    c_info.x_offset = 0;
+    c_info.y_offset += CHAR_HEIGHT;
+    // TODO(2/9/2019): move contents up instead of clearing screen?
+    // If the next character would fall off the screen edge, start again from the top
+    if (c_info.y_offset + CHAR_HEIGHT >= SCREEN_HEIGHT) {
+       clearFrame();
+       c_info.y_offset = 0;
+    }
+}
+
 void puts(const char* str) {
     while(*str) {
         putc(*str++);
     }
+    putNewline();
 }
 
 void putc(char c) {
-    int x_offset = c_info.column_index * CHAR_WIDTH;
-    int y_offset = c_info.row_index * CHAR_HEIGHT;
+    if (c == '\n') {
+        putNewline();
+        return;
+    }
 
-    drawChar(x_offset, y_offset, c_info.foreground, c_info.background, c);
+    drawChar(c_info.x_offset, c_info.y_offset, c_info.foreground, c_info.background, c);
 
-    c_info.column_index++;
-    if (c_info.column_index == 10) {
-        c_info.column_index = 0;
-        c_info.row_index++;
+    c_info.x_offset += CHAR_WIDTH;
+
+    // If the next character would fall off the screen edge, wrap to next line
+    if (c_info.x_offset + CHAR_WIDTH >= SCREEN_WIDTH) {
+        putNewline();
     }
 }

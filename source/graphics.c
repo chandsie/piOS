@@ -4,11 +4,11 @@ static fb_info_t fb_info  __attribute__((aligned(16)));
 
 void framebufferInit() {
     // Fill out non-zero properties of fb init message
-    fb_info.width = 800;
-    fb_info.height = 480;
-    fb_info.virtual_width = 800;
-    fb_info.virtual_height = 480;
-    fb_info.depth = 24;
+    fb_info.width = SCREEN_WIDTH;
+    fb_info.height = SCREEN_HEIGHT;
+    fb_info.virtual_width = SCREEN_WIDTH;
+    fb_info.virtual_height = SCREEN_HEIGHT;
+    fb_info.depth = COLORDEPTH;
 
     // Send 28 MSBs of message addr and channel selection (1 on MB 0) as data
     uint32_t request = BUS_ADDR_BASE | (uint32_t)&fb_info | 0x1;

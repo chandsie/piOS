@@ -5,6 +5,8 @@
 #include <font.h>
 #include <mailbox.h>
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 480
 #define COLORDEPTH 24
 #define PIXEL_BYTES (COLORDEPTH / 8)
 
