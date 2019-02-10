@@ -10,6 +10,7 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags) {
     GPIO16On();
     framebufferInit();
     puts("Welcome to piOS!");
+    puts("The quick brown fox jumps over the lazy dog");
 
     return;
 }
